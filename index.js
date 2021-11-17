@@ -43,7 +43,7 @@ board.on('ready', function () {
     NoT++;
     setTimeout(array,5000);
     },5000)
-}
+})
 
 function toHour(time){
   let sec = Math.round((time % 60) % 60);
@@ -54,6 +54,6 @@ function toHour(time){
     time: time,
     hour: ("00" + hour).slice(-2),
     min: ("00" + min).slice(-2),
-    sec: ("00" + sec).slice(-2)
+    sec: ("00" + sec).slice(-2),
   }
 }
