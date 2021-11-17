@@ -1,5 +1,5 @@
 const five = require("johnny-five");
-
+const http = require("https")
 let accessNum = 0;                 
 
 const board = new five.Board({port: "COM6"}); //ポート名指定はWindowsで必要なため、
@@ -26,21 +26,20 @@ board.on('ready', function () {
         }
     });
     
+    //array()の中にTCPのプロトコルを書く
+    //ArduinoのcatchにもTCPを書いて値を受け取る->DBに投げる
     setTimeout(function array(){
     let nowTime = Math.floor((new Date() - startTime)/1000)
-    if(NoT < 1440){
-        time[NoT] = nowTime
-        tmpBox[NoT] = tmp
-        humBox[NoT] = hum
-    }else{
-        time.shift();
-        tmpBox.shift();
-        humBox.shift();
-        time.push(nowTime)
-        tmpBox.push(tmp)
-        humBox.push(hum)
+    
+    let opts = {
+        host: 'embryomonitor.herokuapp.com/catch/',
+        port: 443,
+        path: "?time=" +nowTime+ "&tmp=" +tmp+ "&hum" +hum
     }
-    NoT++;
+    http.get(opts,(res2)=>{
+        console.log(nowTime+":"+tmp+":"+hum);
+    })
+
     setTimeout(array,5000);
     },5000)
 })
