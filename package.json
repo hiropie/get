@@ -12,6 +12,7 @@
   "dependencies": {
     "johnny-five": "^2.1.0",
     "net": "^1.0.2",
+    "socket.io": "^4.3.2",
     "socket.io-client": "^4.3.2"
   }
 }

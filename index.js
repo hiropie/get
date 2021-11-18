@@ -1,8 +1,9 @@
 const five = require("johnny-five")
 const client = require('socket.io-client')
-let accessNum = 0;                 
 
 const board = new five.Board({port: "COM6"}); //ポート名指定はWindowsで必要なため、
+// const accessPoint = "http://localhost:3000"  //localtest
+const accessPoint = "https://embryomonitor.herokuapp.com/" //heroku
 
 board.on('ready', function () {
     let startTime = new Date(Date.now() + ((new Date().getTimezoneOffset() + (9 * 60)) * 60 * 1000));;
@@ -28,7 +29,7 @@ board.on('ready', function () {
     
     //array()の中にTCPのプロトコルを書く
     //ArduinoのcatchにもTCPを書いて値を受け取る->DBに投げる
-    const socket = client.connect('https://embryomonitor.herokuapp.com/');
+    const socket = client.connect(accessPoint);
     socket.on('connect', ()=>{
         setTimeout(function array(){
             let nowTime = Math.floor((new Date() - startTime)/1000)
