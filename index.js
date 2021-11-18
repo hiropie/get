@@ -31,12 +31,14 @@ board.on('ready', function () {
     //ArduinoのcatchにもTCPを書いて値を受け取る->DBに投げる
     const socket = client.connect(accessPoint);
     socket.on('connect', ()=>{
+        socket.emit("delete", null)
+
         setTimeout(function array(){
             let nowTime = Math.floor((new Date() - startTime)/1000)
             let data = {
                 time: nowTime,
-                tmp: tmp,
-                hum: hum
+                tmp: tmp.toFixed(2),
+                hum: hum.toFixed(2),
             }
             // console.log("sent")
             socket.emit("environment", data)
