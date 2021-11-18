@@ -28,7 +28,7 @@ board.on('ready', function () {
     
     //array()の中にTCPのプロトコルを書く
     //ArduinoのcatchにもTCPを書いて値を受け取る->DBに投げる
-    const socket = client.connect('http://localhost:8080');
+    const socket = client.connect('https://embryomonitor.herokuapp.com/');
     socket.on('connect', ()=>{
         setTimeout(function array(){
             let nowTime = Math.floor((new Date() - startTime)/1000)
@@ -37,6 +37,7 @@ board.on('ready', function () {
                 tmp: tmp,
                 hum: hum
             }
+            // console.log("sent")
             socket.emit("environment", data)
             setTimeout(array,5000);
         },5000)
