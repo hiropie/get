@@ -5,10 +5,11 @@ const readline = require('readline')
 const board = new five.Board({port: "COM6"}); //ポート名指定はWindowsで必要なため、
 // const accessPoint = "http://localhost:3000"  //localtest
 const accessPoint = "https://embryomonitor.herokuapp.com/" //heroku
+let chamberNo
 
 const main = async () => {
       for(;;){
-          const chamberNo = await prompt('Enter Chamber No:(1 or 2)');
+          chamberNo = await prompt('Enter Chamber No:(1 or 2)');
           if(chamberNo == 1 || chamberNo == 2){
               break
           }
@@ -71,7 +72,7 @@ board.on('ready', function () {
     //ArduinoのcatchにもTCPを書いて値を受け取る->DBに投げる
     const socket = client.connect(accessPoint);
     socket.on('connect', ()=>{
-        socket.emit("delete", null)
+        socket.emit("delete", chamberNo)
 
         setTimeout(function array(){
             tmp2 = tmp.toFixed(2)
