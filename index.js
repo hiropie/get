@@ -6,6 +6,7 @@ const readline = require('readline');
 // const accessPoint = "http://localhost:3000"  //localtest
 const accessPoint = "https://embryomonitor.herokuapp.com/"; //heroku url
 let chamberNo = "";
+let COMNo = "";
 
 let startTime;
 let doFlag = 0;
@@ -19,14 +20,18 @@ const target = 52;
 
 
 //標準出力からチャンバーを区別する
-const main = async () => {
+const ChamberGet = async () => {
     for (; ;) {
-        chamberNo = await prompt('Enter Chamber No:(1 or 2)');
-        if (chamberNo == 1 || chamberNo == 2) {
+        chamberNo = await prompt('Enter Chamber No:(A or B)');
+        if (chamberNo == "A" || chamberNo == "B") {
             break;
         }
     }
 };
+
+const COMGet = async () => {
+    COMNo = await prompt('Enter COM No:');
+}
 
 /**
  * ユーザーに値を入力させる
@@ -55,12 +60,13 @@ const question = (question) => {
 
 // 起動
 (async () => {
-    await main();
+    await ChamberGet();
+    await COMGet();
     boardDo();
 })();
 
 function boardDo() {
-    const board = new five.Board({ port: "COM6" }); //ポート名指定はWindowsで必要なため、
+    const board = new five.Board({ port: "COM" + COMNo }); //ポート名指定はWindowsで必要なため、
 
     board.on('ready', function () {
         startTime = new Date(Date.now() + ((new Date().getTimezoneOffset() + (9 * 60)) * 60 * 1000));;
