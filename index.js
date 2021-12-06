@@ -104,7 +104,7 @@ function boardDo() {
                 // console.log("sent")
                 socket.emit("environment", data);
                 setTimeout(array, 1000);
-            }, 5000);
+            }, 1000);
         });
 
         function humControl(humidity) {
