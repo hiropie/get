@@ -78,7 +78,7 @@ function boardDo() {
     const board = new five.Board({ port: "COM" + COMNo }); //ポート名指定はWindowsで必要なため、
 
     board.on('ready', function () {
-        startTime = new Date(Date.now() + ((new Date().getTimezoneOffset() + (9 * 60)) * 60 * 1000));;
+        startTime = new Date(Date.now() + ((new Date().getTimezoneOffset() + (9 * 60)) * 60 * 1000));
         console.log(startTime);
         const push = new five.Led(7);
         const ben = new five.Led(6);
@@ -100,6 +100,7 @@ function boardDo() {
         });
 
         const socket = client.connect(accessPoint);
+        console.log("Access to " + accessPoint);
         socket.emit("delete", chamberNo);
         console.log("delete sent");
 
@@ -111,7 +112,7 @@ function boardDo() {
                 tmp2 = tmp.toFixed(2);
                 hum2 = hum.toFixed(2);
 
-                // pushcheck = humControl(hum2);
+                console.log("Now  => ", (new Date(Date.now() + ((new Date().getTimezoneOffset() + (9 * 60)) * 60 * 1000))));
                 console.log("Count=> " + count);
                 console.log("time => " + nowTime);
                 console.log("tmp  => " + tmp2);
@@ -125,22 +126,13 @@ function boardDo() {
                     tmp: tmp2,
                     hum: hum2,
                 }
-                // timelist[count] = nowTime;
-                // tmplist[count] = tmp2;
-                // humlist[count] = hum2;
-
-                // count++;
-                // if (count == 59) {
-                //     console.log("<<<<<<<<sent>>>>>>>>");
-                //     socket.emit("environment", data);
-                //     count = 0;
-                //     timelist = [];
-                //     tmplist = [];
-                //     humlist = [];
-                // }
+                count++;
 
                 socket.emit("environment", data1);
-                setTimeout(array, 60000);
+                setTimeout(array, 30000);
+
+                // 湿度制御用関数
+                pushcheck = humControl(hum2);
             }, 60000);
         });
 
@@ -153,48 +145,48 @@ function boardDo() {
             humlist = [];
         })
 
-        // function humControl(humidity) {
-        //     let nowTime = new Date() - startTime;
-        //     let check = 0;
+        function humControl(humidity) {
+            let nowTime = new Date() - startTime;
+            let check = 0;
 
-        //     if (humidity > target) {
-        //         doFlag = 1;
-        //     }
+            if (humidity > target) {
+                doFlag = 1;
+            }
 
-        //     if (doFlag == 0) {
-        //         if ((nowTime) > (injectionInterval * 60 * 1000 * count)) {
-        //             console.log(nowTime);
-        //             injection();
-        //             count++;
-        //             check = 1;
-        //         }
-        //     } else if (doFlag == 1 && humidity < target) {
-        //         downer++;
-        //     }
+            if (doFlag == 0) {
+                if ((nowTime) > (injectionInterval * 60 * 1000 * count)) {
+                    console.log(nowTime);
+                    injection();
+                    count++;
+                    check = 1;
+                }
+            } else if (doFlag == 1 && humidity < target) {
+                downer++;
+            }
 
-        //     if (downer > 9) {
-        //         console.log(nowTime);
-        //         injection();
+            if (downer > 9) {
+                console.log(nowTime);
+                injection();
 
-        //         downer = 0;
-        //         check = 1;
-        //     }
-        //     return check;
-        // }
+                downer = 0;
+                check = 1;
+            }
+            return check;
+        }
 
-        // function injection() {
-        //     ben.on();
-        //     push.on();
-        //     console.log("open");
-        //     setTimeout(() => {
-        //         push.off();
-        //     }, pushTime);
+        function injection() {
+            ben.on();
+            push.on();
+            console.log("open");
+            setTimeout(() => {
+                push.off();
+            }, pushTime);
 
-        //     setTimeout(() => {
-        //         ben.off();
-        //         console.log("close");
-        //     }, openTime);
-        // }
+            setTimeout(() => {
+                ben.off();
+                console.log("close");
+            }, openTime);
+        }
     })
 }
 
